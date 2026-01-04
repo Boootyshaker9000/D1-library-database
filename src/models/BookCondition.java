@@ -1,4 +1,6 @@
-﻿public enum BookCondition {
+package models;
+
+public enum BookCondition {
     NEW("New"),
     USED("Used"),
     DAMAGED("Damaged"),

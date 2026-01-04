@@ -1,4 +1,6 @@
-﻿public class Author {
+package models;
+
+public class Author {
     private Integer id;
     private String firstName;
     private String lastName;

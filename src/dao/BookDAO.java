@@ -1,10 +1,19 @@
-﻿public class BookDAO implements GenericDAO<Book> {
+package dao;
+
+import models.*;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+public class BookDAO implements GenericDAO<Book> {
 
     @Override
     public List<Book> getAll() {
         List<Book> books = new ArrayList<>();
         String sql = """
-            SELECT book.id, book.title, book.price, book.available, book.condition_state,
+            SELECT book.id, book.title, book.price, book.available, book.condition,
                    author.id AS author_id, author.first_name, author.last_name,
                    genre.id AS genre_id, genre.name AS genre_name
             FROM books book
@@ -32,8 +41,8 @@
             VALUES (?, ?, ?, ?, ?, ?)
             """;
 
-        try (Connection conn = DatabaseConnector.getInstance().getConnection();
-             PreparedStatement preparedStatement = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        try (Connection connection = DatabaseConnector.getInstance().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             preparedStatement.setString(1, book.getTitle());
             preparedStatement.setBigDecimal(2, book.getPrice());

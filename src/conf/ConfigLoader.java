@@ -1,6 +1,13 @@
-﻿public class ConfigLoader {
+package conf;
 
-    private static final String CONFIG_FILE = "/conf/config.json";
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.io.File;
+import java.io.IOException;
+
+public class ConfigLoader {
+
+    private static final String CONFIG_FILE = "conf/config.json";
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 

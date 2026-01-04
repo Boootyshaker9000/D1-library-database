@@ -1,4 +1,6 @@
-﻿public class Reader {
+package models;
+
+public class Reader {
     private Integer id;
     private String firstName;
     private String lastName;

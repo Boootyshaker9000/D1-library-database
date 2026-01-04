@@ -1,4 +1,14 @@
-﻿public class LoanDAO {
+package dao;
+
+import models.*;
+
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.time.LocalDate;
+
+public class LoanDAO {
     public boolean createLoan(Book book, Reader reader) {
         Connection connection = null;
 
@@ -19,6 +29,8 @@
                 preparedStatement.setDate(3, Date.valueOf(today));
                 preparedStatement.setDate(4, Date.valueOf(returnDate));
                 preparedStatement.executeUpdate();
+            } catch (SQLException sqlException) {
+                throw new RuntimeException(sqlException);
             }
 
             try (PreparedStatement preparedStatement = connection.prepareStatement(updateBookSql)) {

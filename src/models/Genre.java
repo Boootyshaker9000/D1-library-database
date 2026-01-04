@@ -1,18 +1,34 @@
-﻿public enum Genre {
-    SCIFI("Sci-Fi"),
-    DRAMA("Drama"),
-    HORROR("Horor"),
-    ROMANCE("Romantika"),
-    EDUCATIONAL("Odborná");
+package models;
 
-    private final String genre;
+public class Genre {
+    private Integer id;
+    private String name;
 
-    Genre(String genre) {
-        this.genre = genre;
+    public Genre(){}
+
+    public Genre(Integer id, String genre) {
+        this.id = id;
+        this.name = genre;
+    }
+
+    public Integer getId(){
+        return id;
+    }
+
+    public void setId(int id){
+        this.id = id;
+    }
+
+    public String getName(){
+        return name;
+    }
+
+    public void setName(String name){
+        this.name = name;
     }
 
     @Override
     public String toString() {
-        return genre;
+        return name;
     }
 }

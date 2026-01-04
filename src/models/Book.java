@@ -1,4 +1,8 @@
-﻿public class Book {
+package models;
+
+import java.math.BigDecimal;
+
+public class Book {
     private Integer id;
     private String title;
     private BigDecimal price;

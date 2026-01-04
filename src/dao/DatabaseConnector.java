@@ -1,4 +1,14 @@
-﻿public class DatabaseConnector {
+package dao;
+
+import conf.AppConfiguration;
+import conf.ConfigLoader;
+import models.*;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+
+public class DatabaseConnector {
 
     private static DatabaseConnector instance;
     private Connection connection;

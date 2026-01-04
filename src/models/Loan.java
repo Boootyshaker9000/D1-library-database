@@ -1,4 +1,8 @@
-﻿public class Loan {
+package models;
+
+import java.time.LocalDate;
+
+public class Loan {
     private Integer id;
     private LocalDate loanDate;
     private LocalDate returnDate;

@@ -1,4 +1,9 @@
-﻿public interface GenericDAO<T> {
+package dao;
+
+import java.util.List;
+import java.util.Optional;
+
+public interface GenericDAO<T> {
     Optional<T> getById(int id);
     List<T> getAll();
     boolean save(T t);
