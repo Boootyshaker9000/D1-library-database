@@ -6,8 +6,7 @@ public class Reader {
     private String lastName;
     private String phoneNumber;
 
-    public Reader() {
-    }
+    public Reader() {}
 
     public Reader(Integer id, String firstName, String lastName, String phoneNumber) {
         this.id = id;

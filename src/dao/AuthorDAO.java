@@ -56,6 +56,29 @@ public class AuthorDAO implements GenericDAO<Author> {
         return Optional.empty();
     }
 
+    public Optional<Author> findByName(String firstName, String lastName) {
+        String sql = "SELECT * FROM authors WHERE first_name = ? AND last_name = ?";
+        try (Connection connection = DatabaseConnector.getInstance().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+
+            preparedStatement.setString(1, firstName);
+            preparedStatement.setString(2, lastName);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    return Optional.of(new Author(
+                            resultSet.getInt("id"),
+                            resultSet.getString("first_name"),
+                            resultSet.getString("last_name")
+                    ));
+                }
+            }
+        } catch (SQLException sqlException) {
+            System.err.println("Error while finding author: " + sqlException.getMessage());
+        }
+        return Optional.empty();
+    }
+
     @Override
     public boolean save(Author author) {
         String sql = "INSERT INTO authors (first_name, last_name) VALUES (?, ?)";
