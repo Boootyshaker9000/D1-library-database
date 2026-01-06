@@ -1,8 +1,7 @@
-package dao;
+package conn;
 
 import conf.AppConfiguration;
 import conf.ConfigLoader;
-import models.*;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
