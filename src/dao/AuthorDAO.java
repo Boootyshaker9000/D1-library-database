@@ -34,6 +34,25 @@ public class AuthorDAO implements GenericDAO<Author> {
 
     @Override
     public Optional<Author> getById(int id) {
+        String sql = "SELECT * FROM authors WHERE id = ?";
+
+        try (Connection connection = DatabaseConnector.getInstance().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+
+            preparedStatement.setInt(1, id);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    return Optional.of(new Author(
+                            resultSet.getInt("id"),
+                            resultSet.getString("first_name"),
+                            resultSet.getString("last_name")
+                    ));
+                }
+            }
+        } catch (SQLException sqlException) {
+            System.err.println("Chyba při hledání autora ID " + id + ": " + sqlException.getMessage());
+        }
         return Optional.empty();
     }
 

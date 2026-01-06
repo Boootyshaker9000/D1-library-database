@@ -33,7 +33,30 @@ public class ReaderDAO implements GenericDAO<Reader> {
         return readers;
     }
 
-    @Override public Optional<Reader> getById(int id) { return Optional.empty(); }
+    @Override
+    public Optional<Reader> getById(int id) {
+        String sql = "SELECT * FROM readers WHERE id = ?";
+
+        try (Connection connection = DatabaseConnector.getInstance().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+
+            preparedStatement.setInt(1, id);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    return Optional.of(new Reader(
+                            resultSet.getInt("id"),
+                            resultSet.getString("first_name"),
+                            resultSet.getString("last_name"),
+                            resultSet.getString("phone_number")
+                    ));
+                }
+            }
+        } catch (SQLException sqlException) {
+            System.err.println("Chyba při hledání čtenáře ID " + id + ": " + sqlException.getMessage());
+        }
+        return Optional.empty();
+    }
     @Override
     public boolean save(Reader reader) {
         String sql = "INSERT INTO readers (first_name, last_name, phone_number) VALUES (?, ?, ?)";

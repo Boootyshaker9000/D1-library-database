@@ -90,7 +90,97 @@ public class BookDAO implements GenericDAO<Book> {
         );
     }
 
-    @Override public Optional<Book> getById(int id) { return Optional.empty(); }
-    @Override public boolean update(Book book) { return false; }
-    @Override public boolean delete(int id) { return false; }
+    @Override
+    public Optional<Book> getById(int id) {
+        String sql = """
+        SELECT book.id, book.title, book.price, book.available, book.condition,
+               author.id AS author_id, author.first_name, author.last_name,
+               genre.id AS genre_id, genre.name AS genre_name
+        FROM books book
+        JOIN authors author ON book.author_id = author.id
+        JOIN genres genre ON book.genre_id = genre.id
+        WHERE book.id = ?
+        """;
+
+        try (Connection connection = DatabaseConnector.getInstance().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+
+            preparedStatement.setInt(1, id);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    Author author = new Author(
+                            resultSet.getInt("author_id"),
+                            resultSet.getString("first_name"),
+                            resultSet.getString("last_name")
+                    );
+
+                    Genre genre = new Genre(
+                            resultSet.getInt("genre_id"),
+                            resultSet.getString("genre_name")
+                    );
+
+                    String conditionStr = resultSet.getString("condition");
+
+                    Book book = new Book(
+                            resultSet.getInt("id"),
+                            resultSet.getString("title"),
+                            resultSet.getBigDecimal("price"),
+                            resultSet.getBoolean("available"),
+                            models.BookCondition.valueOf(conditionStr),
+                            genre,
+                            author
+                    );
+
+                    return Optional.of(book);
+                }
+            }
+        } catch (SQLException sqlException) {
+            System.err.println("Chyba při hledání knihy ID " + id + ": " + sqlException.getMessage());
+        }
+        return Optional.empty();
+    }
+    @Override
+    public boolean update(Book book) {
+        String sql = "UPDATE books SET title = ?, price = ?, available = ?, condition = ?, genre_id = ?, author_id = ? WHERE id = ?";
+
+        try (Connection connection = DatabaseConnector.getInstance().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+
+            preparedStatement.setString(1, book.getTitle());
+            preparedStatement.setBigDecimal(2, book.getPrice());
+            preparedStatement.setBoolean(3, book.isAvailable());
+
+            preparedStatement.setString(4, book.getCondition().name());
+
+            preparedStatement.setInt(5, book.getGenre().getId());
+            preparedStatement.setInt(6, book.getAuthor().getId());
+
+            preparedStatement.setInt(7, book.getId());
+
+            int affectedRows = preparedStatement.executeUpdate();
+            return affectedRows > 0;
+
+        } catch (SQLException sqlException) {
+            System.err.println("Error while updating book: " + sqlException.getMessage());
+        }
+        return false;
+    }
+    @Override
+    public boolean delete(int id) {
+        String sql = "DELETE FROM books WHERE id = ?";
+
+        try (Connection connection = DatabaseConnector.getInstance().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+
+            preparedStatement.setInt(1, id);
+
+            int affectedRows = preparedStatement.executeUpdate();
+            return affectedRows > 0;
+
+        } catch (SQLException sqlException) {
+            System.err.println("Error while deleting book (ID " + id + "): " + sqlException.getMessage());
+        }
+        return false;
+    }
 }

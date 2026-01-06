@@ -28,7 +28,28 @@ public class GenreDAO implements GenericDAO<Genre> {
         return genres;
     }
 
-    @Override public Optional<Genre> getById(int id) { return Optional.empty(); }
+    @Override
+    public Optional<Genre> getById(int id) {
+        String sql = "SELECT * FROM genres WHERE id = ?";
+
+        try (Connection connection = DatabaseConnector.getInstance().getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+
+            preparedStatement.setInt(1, id);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    return Optional.of(new Genre(
+                            resultSet.getInt("id"),
+                            resultSet.getString("name")
+                    ));
+                }
+            }
+        } catch (SQLException sqlException) {
+            System.err.println("Chyba při hledání žánru ID " + id + ": " + sqlException.getMessage());
+        }
+        return Optional.empty();
+    }
     @Override
     public boolean save(Genre genre) {
         String sql = "INSERT INTO genres (name) VALUES (?)";
