@@ -1,6 +1,7 @@
 package dao;
 
 import conn.DatabaseConnector;
+import exceptions.DbException;
 import models.*;
 
 import java.sql.*;
@@ -8,16 +9,25 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Data Access Object for managing Reader entities.
+ * Handles database operations such as create, read, update, and delete for readers.
+ */
 public class ReaderDAO implements GenericDAO<Reader> {
 
+    /**
+     * Retrieves all readers from the database.
+     *
+     * @return a list of all readers
+     */
     @Override
     public List<Reader> getAll() {
         List<Reader> readers = new ArrayList<>();
-        String sql = "SELECT * FROM readers";
+        String query = "select * from readers";
 
         try (Connection connection = DatabaseConnector.getInstance().getConnection();
              Statement statement = connection.createStatement();
-             ResultSet resultSet = statement.executeQuery(sql)) {
+             ResultSet resultSet = statement.executeQuery(query)) {
 
             while (resultSet.next()) {
                 readers.add(new Reader(
@@ -28,17 +38,23 @@ public class ReaderDAO implements GenericDAO<Reader> {
                 ));
             }
         } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
+            throw new DbException("Error loading readers: " + sqlException.getMessage(), sqlException);
         }
         return readers;
     }
 
+    /**
+     * Finds a reader by their unique identifier.
+     *
+     * @param id the ID of the reader
+     * @return an Optional containing the reader if found, or empty otherwise
+     */
     @Override
     public Optional<Reader> getById(int id) {
-        String sql = "SELECT * FROM readers WHERE id = ?";
+        String query = "select * from readers where id = ?";
 
         try (Connection connection = DatabaseConnector.getInstance().getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
             preparedStatement.setInt(1, id);
 
@@ -53,15 +69,22 @@ public class ReaderDAO implements GenericDAO<Reader> {
                 }
             }
         } catch (SQLException sqlException) {
-            System.err.println("Chyba při hledání čtenáře ID " + id + ": " + sqlException.getMessage());
+            throw new DbException("Error finding reader ID " + id + ": " + sqlException.getMessage(), sqlException);
         }
         return Optional.empty();
     }
+
+    /**
+     * Saves a new reader to the database.
+     *
+     * @param reader the reader entity to save
+     * @return true if the operation was successful, false otherwise
+     */
     @Override
     public boolean save(Reader reader) {
-        String sql = "INSERT INTO readers (first_name, last_name, phone_number) VALUES (?, ?, ?)";
+        String query = "insert into readers (first_name, last_name, phone_number) values (?, ?, ?)";
         try (Connection connection = DatabaseConnector.getInstance().getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
 
             preparedStatement.setString(1, reader.getFirstName());
             preparedStatement.setString(2, reader.getLastName());
@@ -77,16 +100,23 @@ public class ReaderDAO implements GenericDAO<Reader> {
                 return true;
             }
         } catch (SQLException sqlException) {
-            System.err.println("Chyba při ukládání čtenáře: " + sqlException.getMessage());
+            throw new DbException("Error saving reader: " + sqlException.getMessage(), sqlException);
         }
         return false;
     }
+
+    /**
+     * Updates an existing reader in the database.
+     *
+     * @param reader the reader entity with updated values
+     * @return true if the update was successful, false otherwise
+     */
     @Override
     public boolean update(Reader reader) {
-        String sql = "UPDATE readers SET first_name = ?, last_name = ?, phone_number = ? WHERE id = ?";
+        String query = "update readers set first_name = ?, last_name = ?, phone_number = ? where id = ?";
 
         try (Connection connection = DatabaseConnector.getInstance().getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
             preparedStatement.setString(1, reader.getFirstName());
             preparedStatement.setString(2, reader.getLastName());
@@ -96,22 +126,27 @@ public class ReaderDAO implements GenericDAO<Reader> {
             int affectedRows = preparedStatement.executeUpdate();
             return affectedRows > 0;
 
-        } catch (SQLException e) {
-            System.err.println("Chyba při aktualizaci čtenáře: " + e.getMessage());
+        } catch (SQLException sqlException) {
+            throw new DbException("Error updating reader: " + sqlException.getMessage(), sqlException);
         }
-        return false;
     }
+
+    /**
+     * Deletes a reader from the database by their ID.
+     *
+     * @param id the ID of the reader to delete
+     * @return true if the reader was deleted, false otherwise
+     */
     @Override
     public boolean delete(int id) {
-        String sql = "DELETE FROM readers WHERE id = ?";
+        String query = "delete from readers where id = ?";
         try (Connection connection = DatabaseConnector.getInstance().getConnection();
-             PreparedStatement prepareStatement = connection.prepareStatement(sql)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
-            prepareStatement.setInt(1, id);
-            return prepareStatement.executeUpdate() > 0;
+            preparedStatement.setInt(1, id);
+            return preparedStatement.executeUpdate() > 0;
         } catch (SQLException sqlException) {
-            System.err.println("Chyba při mazání čtenáře: " + sqlException.getMessage());
+            throw new DbException("Cannot delete reader. They might have active loans.", sqlException);
         }
-        return false;
     }
 }
