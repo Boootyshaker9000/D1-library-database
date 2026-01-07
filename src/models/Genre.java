@@ -1,14 +1,26 @@
 package models;
 
+/**
+ * Represents a book genre (category).
+ */
 public class Genre {
     private Integer id;
     private String name;
 
+    /**
+     * Default constructor.
+     */
     public Genre(){}
 
-    public Genre(Integer id, String genre) {
+    /**
+     * Constructs a Genre with specified details.
+     *
+     * @param id the unique identifier of the genre
+     * @param name the name of the genre
+     */
+    public Genre(Integer id, String name) {
         this.id = id;
-        this.name = genre;
+        this.name = name;
     }
 
     public Integer getId(){
@@ -27,6 +39,11 @@ public class Genre {
         this.name = name;
     }
 
+    /**
+     * Returns the name of the genre.
+     *
+     * @return the genre name
+     */
     @Override
     public String toString() {
         return name;

@@ -2,6 +2,10 @@ package models;
 
 import java.math.BigDecimal;
 
+/**
+ * Represents a book entity in the library system.
+ * Contains details such as title, price, condition, availability, author, and genre.
+ */
 public class Book {
     private Integer id;
     private String title;
@@ -12,8 +16,22 @@ public class Book {
     private Genre genre;
     private Author author;
 
+    /**
+     * Default constructor.
+     */
     public Book() {}
 
+    /**
+     * Constructs a Book with specified details.
+     *
+     * @param id the unique identifier of the book
+     * @param title the title of the book
+     * @param price the price of the book
+     * @param available the availability status
+     * @param condition the physical condition of the book
+     * @param genre the genre of the book
+     * @param author the author of the book
+     */
     public Book(Integer id, String title, BigDecimal price, boolean available, BookCondition condition, Genre genre, Author author) {
         this.id = id;
         this.title = title;
@@ -45,6 +63,11 @@ public class Book {
     public Author getAuthor() { return author; }
     public void setAuthor(Author author) { this.author = author; }
 
+    /**
+     * Returns the title of the book as its string representation.
+     *
+     * @return the title of the book
+     */
     @Override
     public String toString() {
         return title;

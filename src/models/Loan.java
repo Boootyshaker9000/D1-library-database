@@ -2,6 +2,10 @@ package models;
 
 import java.time.LocalDate;
 
+/**
+ * Represents a loan transaction in the library.
+ * Links a book and a reader with loan and return dates.
+ */
 public class Loan {
     private Integer id;
     private LocalDate loanDate;
@@ -10,8 +14,20 @@ public class Loan {
     private Book book;
     private Reader reader;
 
+    /**
+     * Default constructor.
+     */
     public Loan() {}
 
+    /**
+     * Constructs a Loan with specified details.
+     *
+     * @param id the unique identifier of the loan
+     * @param book the book being loaned
+     * @param reader the reader borrowing the book
+     * @param loanDate the date the loan started
+     * @param returnDate the expected return date
+     */
     public Loan(Integer id, Book book, Reader reader, LocalDate loanDate, LocalDate returnDate) {
         this.id = id;
         this.book = book;
