@@ -36,6 +36,8 @@ public class BookPanel extends JPanel {
 
         bookTable = new JTable(tableModel);
 
+        bookTable.removeColumn(bookTable.getColumnModel().getColumn(0));
+
         JScrollPane scrollPane = new JScrollPane(bookTable);
         add(scrollPane, BorderLayout.CENTER);
 
