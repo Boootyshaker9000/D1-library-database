@@ -1,6 +1,7 @@
 package dao;
 
 import conn.DatabaseConnector;
+import exceptions.DbException;
 import models.*;
 
 import java.sql.*;
@@ -8,16 +9,25 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Data Access Object for managing Author entities.
+ * Handles database operations such as retrieving, saving, updating, and deleting authors.
+ */
 public class AuthorDAO implements GenericDAO<Author> {
 
+    /**
+     * Retrieves all authors from the database, ordered by last name.
+     *
+     * @return a list of all authors
+     */
     @Override
     public List<Author> getAll() {
         List<Author> authors = new ArrayList<>();
-        String sql = "SELECT * FROM authors ORDER BY last_name";
+        String query = "select * from authors order by last_name";
 
         try (Connection connection = DatabaseConnector.getInstance().getConnection();
              Statement statement = connection.createStatement();
-             ResultSet resultSet = statement.executeQuery(sql)) {
+             ResultSet resultSet = statement.executeQuery(query)) {
 
             while (resultSet.next()) {
                 authors.add(new Author(
@@ -27,17 +37,23 @@ public class AuthorDAO implements GenericDAO<Author> {
                 ));
             }
         } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
+            throw new DbException("Error loading authors: " + sqlException.getMessage(), sqlException);
         }
         return authors;
     }
 
+    /**
+     * Finds an author by their unique identifier.
+     *
+     * @param id the ID of the author
+     * @return an Optional containing the author if found, or empty otherwise
+     */
     @Override
     public Optional<Author> getById(int id) {
-        String sql = "SELECT * FROM authors WHERE id = ?";
+        String query = "select * from authors where id = ?";
 
         try (Connection connection = DatabaseConnector.getInstance().getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
             preparedStatement.setInt(1, id);
 
@@ -51,15 +67,22 @@ public class AuthorDAO implements GenericDAO<Author> {
                 }
             }
         } catch (SQLException sqlException) {
-            System.err.println("Chyba při hledání autora ID " + id + ": " + sqlException.getMessage());
+            throw new DbException("Error finding author ID " + id + ": " + sqlException.getMessage(), sqlException);
         }
         return Optional.empty();
     }
 
+    /**
+     * Finds an author by their first and last name.
+     *
+     * @param firstName the first name of the author
+     * @param lastName the last name of the author
+     * @return an Optional containing the author if found, or empty otherwise
+     */
     public Optional<Author> findByName(String firstName, String lastName) {
-        String sql = "SELECT * FROM authors WHERE first_name = ? AND last_name = ?";
+        String query = "select * from authors where first_name = ? and last_name = ?";
         try (Connection connection = DatabaseConnector.getInstance().getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
             preparedStatement.setString(1, firstName);
             preparedStatement.setString(2, lastName);
@@ -74,16 +97,22 @@ public class AuthorDAO implements GenericDAO<Author> {
                 }
             }
         } catch (SQLException sqlException) {
-            System.err.println("Error while finding author: " + sqlException.getMessage());
+            throw new DbException("Error searching for author: " + sqlException.getMessage(), sqlException);
         }
         return Optional.empty();
     }
 
+    /**
+     * Saves a new author to the database.
+     *
+     * @param author the author entity to save
+     * @return true if the operation was successful, false otherwise
+     */
     @Override
     public boolean save(Author author) {
-        String sql = "INSERT INTO authors (first_name, last_name) VALUES (?, ?)";
+        String query = "insert into authors (first_name, last_name) values (?, ?)";
         try (Connection connection = DatabaseConnector.getInstance().getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
 
             preparedStatement.setString(1, author.getFirstName());
             preparedStatement.setString(2, author.getLastName());
@@ -98,17 +127,23 @@ public class AuthorDAO implements GenericDAO<Author> {
                 return true;
             }
         } catch (SQLException sqlException) {
-            System.err.println("Chyba při ukládání autora: " + sqlException.getMessage());
+            throw new DbException("Error saving author: " + sqlException.getMessage(), sqlException);
         }
         return false;
     }
 
+    /**
+     * Updates an existing author in the database.
+     *
+     * @param author the author entity with updated values
+     * @return true if the update was successful, false otherwise
+     */
     @Override
     public boolean update(Author author) {
-        String sql = "UPDATE authors SET first_name = ?, last_name = ? WHERE id = ?";
+        String query = "update authors set first_name = ?, last_name = ? where id = ?";
 
         try (Connection connection = DatabaseConnector.getInstance().getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
             preparedStatement.setString(1, author.getFirstName());
             preparedStatement.setString(2, author.getLastName());
@@ -118,22 +153,26 @@ public class AuthorDAO implements GenericDAO<Author> {
             return affectedRows > 0;
 
         } catch (SQLException sqlException) {
-            System.err.println("Chyba při aktualizaci autora: " + sqlException.getMessage());
+            throw new DbException("Error updating author: " + sqlException.getMessage(), sqlException);
         }
-        return false;
     }
 
+    /**
+     * Deletes an author from the database by their ID.
+     *
+     * @param id the ID of the author to delete
+     * @return true if the author was deleted, false otherwise
+     */
     @Override
     public boolean delete(int id) {
-        String sql = "DELETE FROM authors WHERE id = ?";
+        String query = "delete from authors where id = ?";
         try (Connection connection = DatabaseConnector.getInstance().getConnection();
-             PreparedStatement prepareStatement = connection.prepareStatement(sql)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
-            prepareStatement.setInt(1, id);
-            return prepareStatement.executeUpdate() > 0;
+            preparedStatement.setInt(1, id);
+            return preparedStatement.executeUpdate() > 0;
         } catch (SQLException sqlException) {
-            System.err.println("Chyba při mazání autora (asi má vazbu na knihu): " + sqlException.getMessage());
+            throw new DbException("Cannot delete author. They are likely assigned to a book.", sqlException);
         }
-        return false;
     }
 }

@@ -1,5 +1,9 @@
 package models;
 
+/**
+ * Enum representing the physical condition of a book.
+ * Contains predefined states like New, Used, Damaged, and Restored.
+ */
 public enum BookCondition {
     NEW("New"),
     USED("Used"),
@@ -8,14 +12,29 @@ public enum BookCondition {
 
     private final String label;
 
+    /**
+     * Constructs a BookCondition with a display label.
+     *
+     * @param label the string representation of the condition
+     */
     BookCondition(String label) {
         this.label = label;
     }
 
+    /**
+     * Gets the display label of the condition.
+     *
+     * @return the label string
+     */
     public String getLabel() {
         return label;
     }
 
+    /**
+     * Returns the string representation of the condition.
+     *
+     * @return the label string
+     */
     @Override
     public String toString() {
         return label;
