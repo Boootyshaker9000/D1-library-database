@@ -10,7 +10,7 @@ import java.io.IOException;
  */
 public class ConfigLoader {
 
-    private static final String CONFIG_FILE = "conf/config.json";
+    private static final String CONFIG_FILE = "res/conf/config.json";
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
