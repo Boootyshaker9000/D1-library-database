@@ -1,5 +1,5 @@
 {
-  "dbUrl": "jdbc:mysql://localhost:3306/library",
-  "dbUser": "root",
-  "dbPassword": "student"
+  "dbUrl": "jdbc:mysql://domain|ip:3306/library",
+  "dbUser": "yourUsername",
+  "dbPassword": "yourPassword"
 }
