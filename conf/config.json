@@ -1,5 +1,5 @@
 {
   "dbUrl": "jdbc:mysql://domain|ip:3306/library",
-  "dbUser": "username",
-  "dbPassword": "password"
+  "dbUser": "yourUsername",
+  "dbPassword": "yourPassword"
 }
