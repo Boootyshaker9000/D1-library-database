@@ -54,6 +54,10 @@ public class LoanPanel extends JPanel {
         buttonPanel.add(returnBookButton);
         buttonPanel.add(refreshButton);
 
+        for(Component button : buttonPanel.getComponents()){
+            button.setFocusable(false);
+        }
+
         add(buttonPanel, BorderLayout.SOUTH);
 
         refreshData();

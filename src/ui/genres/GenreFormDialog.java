@@ -40,7 +40,10 @@ public class GenreFormDialog extends JDialog {
         this.genreToEdit = genreToEdit;
 
         initComponents();
-        if (genreToEdit != null) nameField.setText(genreToEdit.getName());
+
+        if (genreToEdit != null) {
+            fillForm(genreToEdit);
+        }
 
         pack();
         setLocationRelativeTo(owner);
@@ -72,9 +75,22 @@ public class GenreFormDialog extends JDialog {
         buttonPanel.add(saveButton);
         buttonPanel.add(cancelButton);
 
+        for(Component button : buttonPanel.getComponents()){
+            button.setFocusable(false);
+        }
+
         gridBagConstraints.gridx = 0; gridBagConstraints.gridy = 1;
         gridBagConstraints.gridwidth = 2;
         add(buttonPanel, gridBagConstraints);
+    }
+
+    /**
+     * Fills the form fields with data from the genre object.
+     *
+     * @param genre the genre object containing data to display
+     */
+    private void fillForm(Genre genre) {
+        nameField.setText(genre.getName());
     }
 
     /**

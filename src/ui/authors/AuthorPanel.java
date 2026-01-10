@@ -38,7 +38,7 @@ public class AuthorPanel extends JPanel {
         JPanel buttonPanel = new JPanel();
         JButton addButton = new JButton("Add Author");
         JButton editButton = new JButton("Edit Author");
-        JButton deleteButton = new JButton("Delete Selected");
+        JButton deleteButton = new JButton("Delete Author");
         JButton refreshButton = new JButton("Refresh");
 
         addButton.addActionListener(actionEvent -> openAddDialog());
@@ -50,6 +50,10 @@ public class AuthorPanel extends JPanel {
         buttonPanel.add(editButton);
         buttonPanel.add(deleteButton);
         buttonPanel.add(refreshButton);
+
+        for(Component button : buttonPanel.getComponents()){
+            button.setFocusable(false);
+        }
 
         add(buttonPanel, BorderLayout.SOUTH);
 

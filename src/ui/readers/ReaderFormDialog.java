@@ -90,6 +90,10 @@ public class ReaderFormDialog extends JDialog {
         buttonPanel.add(saveButton);
         buttonPanel.add(cancelButton);
 
+        for(Component button : buttonPanel.getComponents()){
+            button.setFocusable(false);
+        }
+
         gridBagConstraints.gridx = 0; gridBagConstraints.gridy = 3;
         gridBagConstraints.gridwidth = 2;
         add(buttonPanel, gridBagConstraints);

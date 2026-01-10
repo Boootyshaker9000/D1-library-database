@@ -58,7 +58,7 @@ public class BookPanel extends JPanel {
 
         JButton addButton = new JButton("Add Book");
         JButton editButton = new JButton("Edit Book");
-        JButton deleteButton = new JButton("Delete Selected");
+        JButton deleteButton = new JButton("Delete Book");
         JButton refreshButton = new JButton("Refresh");
 
         addButton.addActionListener(actionEvent -> openAddBookDialog());
@@ -70,6 +70,10 @@ public class BookPanel extends JPanel {
         buttonPanel.add(editButton);
         buttonPanel.add(deleteButton);
         buttonPanel.add(refreshButton);
+
+        for(Component button : buttonPanel.getComponents()){
+            button.setFocusable(false);
+        }
 
         return buttonPanel;
     }

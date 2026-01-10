@@ -126,6 +126,10 @@ public class BookFormDialog extends JDialog {
         gridBagConstraints.gridx = 0; gridBagConstraints.gridy = 6;
         gridBagConstraints.gridwidth = 2;
         add(buttonPanel, gridBagConstraints);
+
+        for(Component button : buttonPanel.getComponents()){
+            button.setFocusable(false);
+        }
     }
 
     /**

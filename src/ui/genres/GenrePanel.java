@@ -16,7 +16,7 @@ import java.util.List;
 public class GenrePanel extends JPanel {
 
     private final GenreDAO genreDAO = new GenreDAO();
-    private final JTable table;
+    private final JTable genreTable;
     private final DefaultTableModel tableModel;
 
     /**
@@ -30,39 +30,39 @@ public class GenrePanel extends JPanel {
             @Override public boolean isCellEditable(int row, int column) { return false; }
         };
 
-        table = new JTable(tableModel);
-        table.removeColumn(table.getColumnModel().getColumn(0));
-        add(new JScrollPane(table), BorderLayout.CENTER);
+        genreTable = new JTable(tableModel);
+        genreTable.removeColumn(genreTable.getColumnModel().getColumn(0));
+        add(new JScrollPane(genreTable), BorderLayout.CENTER);
 
         JPanel buttonPanel = new JPanel();
-        JButton addButton = new JButton("Add");
-        JButton editButton = new JButton("Edit");
-        JButton deleteButton = new JButton("Delete");
+        JButton addButton = new JButton("Add Genre");
+        JButton editButton = new JButton("Edit Genre");
+        JButton deleteButton = new JButton("Delete Genre");
         JButton refreshButton = new JButton("Refresh");
 
-        addButton.addActionListener(actionEvent -> openDialog(null));
-        editButton.addActionListener(actionEvent -> {
-            int selectedRow = table.getSelectedRow();
-            if (selectedRow != -1) {
-                openDialog(new Genre((int)tableModel.getValueAt(selectedRow, 0), (String)tableModel.getValueAt(selectedRow, 1)));
-            }
-        });
-        deleteButton.addActionListener(actionEvent -> deleteGenre());
-        refreshButton.addActionListener(actionEvent -> refresh());
+        addButton.addActionListener(actionEvent -> openAddDialog());
+        editButton.addActionListener(actionEvent -> openEditDialog());
+        deleteButton.addActionListener(actionEvent -> deleteSelectedGenre());
+        refreshButton.addActionListener(actionEvent -> refreshData());
 
         buttonPanel.add(addButton);
         buttonPanel.add(editButton);
         buttonPanel.add(deleteButton);
         buttonPanel.add(refreshButton);
+
+        for(Component button : buttonPanel.getComponents()){
+            button.setFocusable(false);
+        }
+
         add(buttonPanel, BorderLayout.SOUTH);
 
-        refresh();
+        refreshData();
     }
 
     /**
      * Refreshes the list of genres.
      */
-    private void refresh() {
+    private void refreshData() {
         tableModel.setRowCount(0);
         try {
             List<Genre> genres = genreDAO.getAll();
@@ -75,29 +75,78 @@ public class GenrePanel extends JPanel {
     }
 
     /**
-     * Opens the form dialog for adding or editing a genre.
-     *
-     * @param genre the genre to edit, or null for a new genre
+     * Opens the form dialog for adding a genre.
      */
-    private void openDialog(Genre genre) {
-        GenreFormDialog genreFormDialog = new GenreFormDialog(SwingUtilities.getWindowAncestor(this), genreDAO, genre);
-        genreFormDialog.setVisible(true);
-        if (genreFormDialog.isSuccess()) refresh();
+    private void openAddDialog() {
+        Window parent = SwingUtilities.getWindowAncestor(this);
+        GenreFormDialog dialog = new GenreFormDialog(parent, genreDAO);
+        dialog.setVisible(true);
+
+        if (dialog.isSuccess()) {
+            refreshData();
+            JOptionPane.showMessageDialog(this, "Genre added successfully.");
+        }
+    }
+
+    /**
+     * Opens the form dialog for adding or editing a genre.
+     */
+    private void openEditDialog() {
+        int selectedRow = genreTable.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Please select a genre to edit.", "Warning", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        int id = (int) tableModel.getValueAt(selectedRow, 0);
+
+        try {
+            genreDAO.getById(id).ifPresentOrElse(
+                    genre -> {
+                        Window parent = SwingUtilities.getWindowAncestor(this);
+                        GenreFormDialog dialog = new GenreFormDialog(parent, genreDAO, genre);
+                        dialog.setVisible(true);
+
+                        if (dialog.isSuccess()) {
+                            refreshData();
+                            JOptionPane.showMessageDialog(this, "Genre updated successfully.");
+                        }
+                    },
+                    () -> JOptionPane.showMessageDialog(this, "Genre not found.", "Error", JOptionPane.ERROR_MESSAGE)
+            );
+        } catch (DbException dbException) {
+            JOptionPane.showMessageDialog(this, dbException.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     /**
      * Deletes the selected genre.
      */
-    private void deleteGenre() {
-        int selectedRow = table.getSelectedRow();
-        if (selectedRow == -1) return;
-        int id = (int) tableModel.getValueAt(selectedRow, 0);
+    private void deleteSelectedGenre() {
+        int selectedRow = genreTable.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Please select a genre to delete.", "Warning", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
 
-        if (JOptionPane.showConfirmDialog(this, "Delete genre?", "Confirm", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+        int id = (int) tableModel.getValueAt(selectedRow, 0);
+        String name = (String) tableModel.getValueAt(selectedRow, 1);
+
+        int confirm = JOptionPane.showConfirmDialog(this,
+                "Delete genre '" + name + "'?",
+                "Confirm Deletion",
+                JOptionPane.YES_NO_OPTION);
+
+        if (confirm == JOptionPane.YES_OPTION) {
             try {
-                if (genreDAO.delete(id)) refresh();
+                if (genreDAO.delete(id)) {
+                    refreshData();
+                    JOptionPane.showMessageDialog(this, "Genre deleted.");
+                } else {
+                    JOptionPane.showMessageDialog(this, "Could not delete genre. Likely associated with a book.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
             } catch (DbException dbException) {
-                JOptionPane.showMessageDialog(this, dbException.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, dbException.getMessage(), "Database Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }

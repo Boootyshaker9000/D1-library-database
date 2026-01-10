@@ -4,7 +4,6 @@ import dao.ActiveLoansDAO;
 import dao.LibraryStatisticsDAO;
 import exceptions.DbException;
 import models.ActiveLoans;
-import models.LibraryStatistics;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -68,13 +67,15 @@ public class StatisticsPanel extends JPanel {
         };
 
         JTable table = new JTable(tableModel);
+        table.removeColumn(table.getColumnModel().getColumn(0));
 
         table.setDefaultRenderer(Object.class, new OverdueRowRenderer());
 
         add(new JScrollPane(table), BorderLayout.CENTER);
 
-        JButton refreshButton = new JButton("Refresh Statistics");
+        JButton refreshButton = new JButton("Refresh");
         refreshButton.addActionListener(actionEvent -> refreshData());
+        refreshButton.setFocusable(false);
 
         JPanel bottomPanel = new JPanel();
         bottomPanel.add(refreshButton);
