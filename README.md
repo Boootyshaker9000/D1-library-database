@@ -25,9 +25,7 @@ Open your code editor.
 Run the Main method in file Program.cs
 Alternatively, you can go to /bin/Debug/net8.0/ and run the PasswordCracker binary file. This method does not need the requirements above.
 If you are using release option, go to the /win-x64/ and run dictionary-attack.exe
-Legal disclaimer
-The program is not intended for illegal activity. The author is not responsible for any legal issues.
-Contact
+## Contact
 If you have any questions regarding this project, or you'd like to contribute, do not hesitate to contact me.
 e-mail address: relich@post.cz
 discord id: 697353234465030184
