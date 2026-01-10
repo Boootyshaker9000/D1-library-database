@@ -22,7 +22,7 @@ public class DatabaseConnector {
      * Private constructor to prevent direct instantiation.
      * Loads the application configuration.
      */
-    private DatabaseConnector() {
+    private DatabaseConnector() throws RuntimeException {
         this.appConfiguration = ConfigLoader.loadConfig();
     }
 
@@ -54,5 +54,13 @@ public class DatabaseConnector {
             );
         }
         return connection;
+    }
+
+    public void checkConnection() throws SQLException {
+        try (Connection testConn = DriverManager.getConnection(
+                appConfiguration.dbUrl(),
+                appConfiguration.dbUser(),
+                appConfiguration.dbPassword())) {
+        }
     }
 }
