@@ -20,12 +20,10 @@ public class ConfigLoader {
      * @return the AppConfiguration object containing database credentials
      * @throws RuntimeException if the configuration file cannot be read
      */
-    public static AppConfiguration loadConfig() {
-        try {
-            File file = new File(CONFIG_FILE);
-            return objectMapper.readValue(file, AppConfiguration.class);
-        } catch (IOException ioException) {
-            throw new RuntimeException("Error while loading " + CONFIG_FILE + ": " + ioException.getMessage());
-        }
+    public static AppConfiguration loadConfig() throws IOException {
+        File file = new File(CONFIG_FILE);
+        file.getParentFile().mkdirs();
+        file.createNewFile();
+        return objectMapper.readValue(file, AppConfiguration.class);
     }
 }

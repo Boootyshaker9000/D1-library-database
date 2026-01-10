@@ -3,6 +3,7 @@ import conn.DatabaseConnector;
 import ui.MainFrame;
 
 import javax.swing.*;
+import java.io.IOException;
 import java.sql.SQLException;
 
 /**
@@ -22,11 +23,14 @@ public class Main {
             DatabaseConnector.getInstance().checkConnection();
 
         } catch (SQLException sqlException) {
-            String errorDetail = sqlException.getMessage();
             JOptionPane.showMessageDialog(null,
-                    "Critical error: The file 'config.json' probably contains incorrect information!\n\n" +
-                            "The app cannot connect to database.\n" +
-                            "Error detail: " + errorDetail,
+                    "Critical error: The file 'conf/config.json' probably contains incorrect information!",
+                    "Configuration error",
+                    JOptionPane.ERROR_MESSAGE);
+            System.exit(1);
+        } catch (IOException ioException) {
+            JOptionPane.showMessageDialog(null,
+                    "Critical error: The file 'conf/config.json' is empty, keys have been changed or has invalid json format!",
                     "Configuration error",
                     JOptionPane.ERROR_MESSAGE);
             System.exit(1);

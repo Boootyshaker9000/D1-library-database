@@ -3,6 +3,7 @@ package conn;
 import conf.AppConfiguration;
 import conf.ConfigLoader;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -22,7 +23,7 @@ public class DatabaseConnector {
      * Private constructor to prevent direct instantiation.
      * Loads the application configuration.
      */
-    private DatabaseConnector() throws RuntimeException {
+    private DatabaseConnector() throws IOException {
         this.appConfiguration = ConfigLoader.loadConfig();
     }
 
@@ -33,7 +34,9 @@ public class DatabaseConnector {
      */
     public static DatabaseConnector getInstance() {
         if (instance == null) {
-            instance = new DatabaseConnector();
+            try{
+                instance = new DatabaseConnector();
+            } catch (IOException ignored){}
         }
         return instance;
     }
@@ -56,6 +59,10 @@ public class DatabaseConnector {
         return connection;
     }
 
+    /**
+     * Checks if the application can connect to the database server.
+     * @throws SQLException If the connection to the database server fails.
+     */
     public void checkConnection() throws SQLException {
         try (Connection testConn = DriverManager.getConnection(
                 appConfiguration.dbUrl(),
