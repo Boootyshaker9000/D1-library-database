@@ -2,9 +2,9 @@
 ## Program's purpose
 This application serves for managing a library database. It connects to a MySQL database and let's you view, add, update and delete data such as info about books, readers, loans, etc.
 ## Requirements
-[Java 17](https://www.oracle.com/java/technologies/downloads/#jdk21-windows)
-[MySQL 8.0.44](https://dev.mysql.com/downloads/installer/)
-The user whos credentials are filled in the *conf/config.json* file must have priviliges for reading, writing, updating and deleting to use the app as intended.
+- [Java 17](https://www.oracle.com/java/technologies/downloads/#jdk21-windows)
+- [MySQL 8.0.44](https://dev.mysql.com/downloads/installer/) 
+  - The user whos credentials are filled in the *conf/config.json* file must have priviliges for reading, writing, updating and deleting to use the app as intended.
 ## How to run program
 ### Configuration
 The app loads credentials from *conf/config.json*. The content of the file may look something like this:
