@@ -18,7 +18,7 @@ The app loads credentials from *conf/config.json*. The content of the file may l
 Do not change the location of this config file, or it's name. If you do, the program will end with an error.
 Do not change the JSON keys. If you do, the program will end with an error.
 ### Database setup
-Use the *database_setup/generation-script.sql* to create the database and it's tables on your MySQL server.
+Use the *database_setup/generation-script.sql* to create the database and it's tables with test data on your MySQL server.
 ### Running the binary file
 Double-click on the *library-database-manager.jar*.
 If nothing happens, check if you have your Java added to PATH.  
