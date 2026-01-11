@@ -21,12 +21,4 @@ public record ActiveLoans(
         LocalDate returnDate,
         int daysOverdue
 ) {
-    /**
-     * Checks if the loan is currently overdue.
-     *
-     * @return true if daysOverdue is greater than 0
-     */
-    public boolean isOverdue() {
-        return daysOverdue > 0;
-    }
 }

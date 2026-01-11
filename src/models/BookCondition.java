@@ -22,15 +22,6 @@ public enum BookCondition {
     }
 
     /**
-     * Gets the display label of the condition.
-     *
-     * @return the label string
-     */
-    public String getLabel() {
-        return label;
-    }
-
-    /**
      * Returns the string representation of the condition.
      *
      * @return the label string
