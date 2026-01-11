@@ -56,6 +56,8 @@ The application uses SQL Views to simplify logic:
 ### 5.1 Third-party Libraries (Dependencies)
 The project depends on the following external libraries:
 * MySQL Connector/J (version 8.3.0)
+  * Author: Mark Matthews
+  * Owner: Oracle
   * Purpose: JDBC driver for communication with the MySQL database.
   * License: GPLv2.
 * Jackson Databind & Core (version 2.17.0)
