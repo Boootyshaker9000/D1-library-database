@@ -11,13 +11,24 @@ import java.util.List;
 
 /**
  * Panel for managing Authors.
+ * Displays a list of authors in a table and provides buttons for CRUD operations.
  */
 public class AuthorPanel extends JPanel {
 
+    /** Data Access Object for handling Author persistence. */
     private final AuthorDAO authorDAO = new AuthorDAO();
+
+    /** The table component displaying the list of authors. */
     private final JTable authorTable;
+
+    /** The model backing the author table. */
     private final DefaultTableModel tableModel;
 
+    /**
+     * Constructs the AuthorPanel.
+     * Initializes the table model, configures the JTable (hiding the ID column),
+     * and sets up the control buttons.
+     */
     public AuthorPanel() {
         setLayout(new BorderLayout());
 
@@ -31,6 +42,7 @@ public class AuthorPanel extends JPanel {
 
         authorTable = new JTable(tableModel);
 
+        // Hide the ID column from view but keep it in the model
         authorTable.removeColumn(authorTable.getColumnModel().getColumn(0));
 
         add(new JScrollPane(authorTable), BorderLayout.CENTER);
@@ -60,6 +72,10 @@ public class AuthorPanel extends JPanel {
         refreshData();
     }
 
+    /**
+     * Refreshes the data in the table by fetching the latest list of authors
+     * from the database and updating the table model.
+     */
     private void refreshData() {
         tableModel.setRowCount(0);
         try {
@@ -72,6 +88,10 @@ public class AuthorPanel extends JPanel {
         }
     }
 
+    /**
+     * Opens the AuthorFormDialog to add a new author.
+     * Refreshes the table data if the operation was successful.
+     */
     private void openAddDialog() {
         Window parent = SwingUtilities.getWindowAncestor(this);
         AuthorFormDialog dialog = new AuthorFormDialog(parent, authorDAO);
@@ -83,6 +103,10 @@ public class AuthorPanel extends JPanel {
         }
     }
 
+    /**
+     * Opens the AuthorFormDialog to edit the currently selected author.
+     * Displays a warning if no row is selected.
+     */
     private void openEditDialog() {
         int selectedRow = authorTable.getSelectedRow();
         if (selectedRow == -1) {
@@ -111,6 +135,10 @@ public class AuthorPanel extends JPanel {
         }
     }
 
+    /**
+     * Deletes the currently selected author after user confirmation.
+     * Displays a warning if no row is selected.
+     */
     private void deleteSelectedAuthor() {
         int selectedRow = authorTable.getSelectedRow();
         if (selectedRow == -1) {

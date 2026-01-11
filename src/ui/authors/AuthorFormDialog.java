@@ -9,29 +9,39 @@ import java.awt.*;
 
 /**
  * Dialog for adding or editing an Author.
+ * This modal dialog allows the user to input first and last names.
  */
 public class AuthorFormDialog extends JDialog {
 
+    /** Input field for the author's first name. */
     private JTextField firstNameField;
+
+    /** Input field for the author's last name. */
     private JTextField lastNameField;
+
+    /** Data Access Object for handling Author persistence. */
     private final AuthorDAO authorDAO;
+
+    /** The author object being edited, or null if creating a new author. */
     private final Author authorToEdit;
+
+    /** Flag indicating if the save operation was successful. */
     private boolean success = false;
 
     /**
-     * Constructor for new author.
-     * @param owner parent window
-     * @param authorDAO DAO
+     * Constructor for creating a new author.
+     * * @param owner     The parent window (owner) of this dialog.
+     * @param authorDAO The DAO instance for database operations.
      */
     public AuthorFormDialog(Window owner, AuthorDAO authorDAO) {
         this(owner, authorDAO, null);
     }
 
     /**
-     * Constructor for editing author.
-     * @param owner parent window
-     * @param authorDAO DAO
-     * @param authorToEdit author to edit
+     * Constructor for editing an existing author.
+     * * @param owner        The parent window (owner) of this dialog.
+     * @param authorDAO    The DAO instance for database operations.
+     * @param authorToEdit The Author object to edit, or null to create a new one.
      */
     public AuthorFormDialog(Window owner, AuthorDAO authorDAO, Author authorToEdit) {
         super(owner, authorToEdit == null ? "Add Author" : "Edit Author", ModalityType.APPLICATION_MODAL);
@@ -48,6 +58,10 @@ public class AuthorFormDialog extends JDialog {
         setLocationRelativeTo(owner);
     }
 
+    /**
+     * Initializes the UI components, sets up the GridBagLayout,
+     * and adds action listeners to buttons.
+     */
     private void initComponents() {
         setLayout(new GridBagLayout());
         GridBagConstraints gridBagConstraints = new GridBagConstraints();
@@ -87,11 +101,20 @@ public class AuthorFormDialog extends JDialog {
         add(buttonPanel, gridBagConstraints);
     }
 
+    /**
+     * Pre-fills the form fields with data from the existing Author object.
+     * * @param author The author whose data should be displayed.
+     */
     private void fillForm(Author author) {
         firstNameField.setText(author.getFirstName());
         lastNameField.setText(author.getLastName());
     }
 
+    /**
+     * Handles the "Save" button action.
+     * Validates input, creates or updates the Author object, and persists it via the DAO.
+     * Closes the dialog upon success.
+     */
     private void onSave() {
         String firstName = firstNameField.getText().trim();
         String lastName = lastNameField.getText().trim();
@@ -119,6 +142,10 @@ public class AuthorFormDialog extends JDialog {
         }
     }
 
+    /**
+     * Checks if the dialog action resulted in a successful database update.
+     * * @return true if the author was successfully saved or updated, false otherwise.
+     */
     public boolean isSuccess() {
         return success;
     }

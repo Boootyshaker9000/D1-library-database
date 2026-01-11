@@ -11,13 +11,24 @@ import java.util.List;
 
 /**
  * Panel for managing Readers.
+ * Displays a list of readers in a table and provides buttons for CRUD operations.
  */
 public class ReaderPanel extends JPanel {
 
+    /** Data Access Object for handling Reader persistence. */
     private final ReaderDAO readerDAO = new ReaderDAO();
+
+    /** The table component displaying the list of readers. */
     private final JTable readerTable;
+
+    /** The model backing the reader table. */
     private final DefaultTableModel tableModel;
 
+    /**
+     * Constructs the ReaderPanel.
+     * Initializes the table model with reader-specific columns,
+     * configures the JTable, and sets up the control buttons.
+     */
     public ReaderPanel() {
         setLayout(new BorderLayout());
 
@@ -31,6 +42,7 @@ public class ReaderPanel extends JPanel {
 
         readerTable = new JTable(tableModel);
 
+        // Hide the ID column from view but keep it in the model
         readerTable.removeColumn(readerTable.getColumnModel().getColumn(0));
 
         add(new JScrollPane(readerTable), BorderLayout.CENTER);
@@ -60,6 +72,10 @@ public class ReaderPanel extends JPanel {
         refreshData();
     }
 
+    /**
+     * Refreshes the data in the table by fetching the latest list of readers
+     * from the database and updating the table model.
+     */
     private void refreshData() {
         tableModel.setRowCount(0);
         try {
@@ -77,6 +93,10 @@ public class ReaderPanel extends JPanel {
         }
     }
 
+    /**
+     * Opens the ReaderFormDialog to add a new reader.
+     * Refreshes the table data if the operation was successful.
+     */
     private void openAddDialog() {
         Window parent = SwingUtilities.getWindowAncestor(this);
         ReaderFormDialog dialog = new ReaderFormDialog(parent, readerDAO);
@@ -88,6 +108,10 @@ public class ReaderPanel extends JPanel {
         }
     }
 
+    /**
+     * Opens the ReaderFormDialog to edit the currently selected reader.
+     * Displays a warning if no row is selected.
+     */
     private void openEditDialog() {
         int selectedRow = readerTable.getSelectedRow();
         if (selectedRow == -1) {
@@ -116,6 +140,10 @@ public class ReaderPanel extends JPanel {
         }
     }
 
+    /**
+     * Deletes the currently selected reader after user confirmation.
+     * Displays a warning if no row is selected.
+     */
     private void deleteSelectedReader() {
         int selectedRow = readerTable.getSelectedRow();
         if (selectedRow == -1) {
