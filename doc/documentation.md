@@ -34,133 +34,19 @@ The application is designed using a layered architecture that separates data (Mo
 * **MVC (Model-View-Controller) Principles:** Although Swing is not strictly MVC, the application separates models (`models.*`), logic (`dao.*`, `services.*`), and views (`ui.*`).
 ### 2.2 UML Class Diagram (Structural View)
 Below is a simplified schema of the main classes and their relationships.
-```plantuml
-@startuml
-skinparam classAttributeIconSize 0
-package "models" {
-  class Book
-  class Loan
-  class Reader
-}
+![Simplified Class Diagram](diagrams/class-diagram-simplified.svg)
 
-package "conn" {
-  class DatabaseConnector <<Singleton>>
-}
-
-package "dao" {
-  interface GenericDAO<T>
-  class BookDAO
-  class LoanDAO
-  class ReaderDAO
-}
-
-package "ui" {
-  class MainFrame
-  class BookPanel
-  class LoanPanel
-  class StatisticsPanel
-}
-
-GenericDAO <|.. BookDAO
-GenericDAO <|.. ReaderDAO
-BookDAO ..> Book : uses
-LoanDAO ..> Loan : uses
-MainFrame *-- BookPanel
-MainFrame *-- LoanPanel
-MainFrame *-- StatisticsPanel
-BookPanel --> BookDAO
-LoanPanel --> LoanDAO
-BookDAO ..> DatabaseConnector
-@enduml
-```
 ---
 ## 3. Application Behavior (Behavioral Diagrams)
 ### 3.1 Loan Creation Process (Activity Diagram)
 The following diagram describes the internal system process when a librarian attempts to create a new loan. The system ensures transactional processing (inserting the loan and updating book availability happen atomically).
-```plantuml
-@startuml
-:User opens "New Loan" dialog;
-:Load list of readers and AVAILABLE books;
-if (Is book and reader selected?) then (Yes)
-  :Validate dates (Return > Loan);
-  if (Dates valid?) then (Yes)
-    :Start DB transaction (setAutoCommit false);
-    :INSERT into table 'loans';
-    :UPDATE table 'books' (available = 0);
-    if (Success?) then (Yes)
-      :Commit transaction;
-      :Update table in UI;
-      :Show "Success" message;
-    else (No - SQL Error)
-      :Rollback transaction;
-      :Show error message;
-    endif
-  else (No)
-    :Show warning "Invalid Date";
-  endif
-else (No)
-  :Show warning "Select book and reader";
-endif
-stop
-@enduml
-```
+![Activity Diagram](diagrams/activity-diagram.svg)
+
 ---
 ## 4. Database Model (E-R Diagram)
 The application uses a MySQL relational database. The structure is designed in 3rd Normal Form.
 ### 4.1 Database Schema
-```plantuml
-**@startuml
-' Settings for ER diagram
-hide circle
-skinparam linetype ortho
-
-entity "authors" {
-  *id : INT (PK)
-  --
-  first_name : VARCHAR
-  last_name : VARCHAR
-}
-
-entity "genres" {
-  *id : INT (PK)
-  --
-  name : VARCHAR
-}
-
-entity "books" {
-  *id : INT (PK)
-  --
-  title : VARCHAR
-  price : DECIMAL
-  available : BOOLEAN
-  condition : VARCHAR
-  *author_id : INT (FK)
-  *genre_id : INT (FK)
-}
-
-entity "readers" {
-  *id : INT (PK)
-  --
-  first_name : VARCHAR
-  last_name : VARCHAR
-  phone_number : VARCHAR
-}
-
-entity "loans" {
-  *id : INT (PK)
-  --
-  loan_date : DATE
-  return_date : DATE
-  *books_id : INT (FK)
-  *readers_id : INT (FK)
-}
-
-books }|..|| authors
-books }|..|| genres
-loans }|..|| books
-loans }|..|| readers
-@enduml**
-```
+![ER Diagram](diagrams/er-diagram.svg)
 ### 4.2 Views
 The application uses SQL Views to simplify logic:
 * active_loans: Joins loans, books, and readers tables and calculates days_overdue.
@@ -239,6 +125,7 @@ Functionality was verified through manual integration testing.
 * Input Validation: Cannot save a book without a title or with a negative price (Successful).
 * Reader's phone number accepts only digits and plus sign (Successful).
 Further testing will be done by external tester using provided Test cases.
+
 ---
 ## 9. Project Summary and Legal Aspects
 ### 9.1 Summary
@@ -248,7 +135,8 @@ The architecture is modular and ready for further expansion (e.g., loan history 
 This software was created as a school project and is intended solely for educational purposes.  
 Copyright for the source code belongs to the author.  
 The use of third-party libraries is governed by their respective licenses (GPL for MySQL, Apache 2.0 for Jackson).  
-The application does not store any sensitive personal data requiring GDPR compliance (reader data is fictitious/demonstrative).  
+The application does not store any sensitive personal data requiring GDPR compliance (reader data is fictitious/demonstrative).
+
 ---
 ### 10. Known Issues and Version
 Version: 1.0.0  
