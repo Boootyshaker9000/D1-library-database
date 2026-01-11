@@ -4,7 +4,7 @@ This application serves for managing a library database. It connects to a MySQL 
 ## Requirements
 - [Java 17](https://www.oracle.com/java/technologies/downloads/#jdk21-windows)
 - [MySQL 8.0.44](https://dev.mysql.com/downloads/installer/) 
-  - The user whos credentials are filled in the *conf/config.json* file must have priviliges for reading, writing, updating and deleting to use the app as intended.
+  - The user whose credentials are filled in the *conf/config.json* file must have privileges for reading, writing, updating and deleting to use the app as intended.
 ## How to run program
 ### Configuration
 The app loads credentials from *conf/config.json*. The content of the file may look something like this:
@@ -15,8 +15,8 @@ The app loads credentials from *conf/config.json*. The content of the file may l
   "dbPassword": "I<3books"
 }
 ```
-Do not change the location of this config file or it's name. If you do, the program will end with an error.
-Do not change the json keys. If you do, the program will end with an error.
+Do not change the location of this config file, or it's name. If you do, the program will end with an error.
+Do not change the JSON keys. If you do, the program will end with an error.
 ### Database setup
 Use the *database_setup/generation-script.sql* to create the database and it's tables on your MySQL server.
 ### Running the binary file
