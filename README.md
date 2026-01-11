@@ -30,4 +30,4 @@ javaw -jar library-database-manager.jar
 ## Contact
 If you have any questions regarding this project, or you'd like to contribute, do not hesitate to contact me.
 - e-mail address: relich@post.cz
-- discord id: 697353234465030184
+- Discord: boootyshaker9000
