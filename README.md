@@ -21,7 +21,7 @@ Do not change the JSON keys. If you do, the program will end with an error.
 Use the *database_setup/generation-script.sql* to create the database and it's tables on your MySQL server.
 ### Running the binary file
 Double-click on the *library-database-manager.jar*.
-If nothing happens, check if you have your Java added to PATH.
+If nothing happens, check if you have your Java added to PATH.  
 If you have Java in PATH and the program does not start, open your terminal (*Command Prompt* on *Windows*),  
 navigate to the *library-database-manager/* and run this command:
 ```bash
